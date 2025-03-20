@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+// Remove trailing slash if present
+const API_URL = (process.env.REACT_APP_API_URL || 'http://localhost:3000').replace(/\/$/, '');
 
 // Log the API URL for debugging
 console.log('API URL being used:', API_URL);
@@ -27,7 +28,8 @@ const handleResponse = async (promise) => {
       baseURL: error.config?.baseURL,
       status: error.response?.status,
       data: error.response?.data,
-      message: error.message
+      message: error.message,
+      fullUrl: error.config?.baseURL + error.config?.url
     });
     throw error.response?.data || error;
   }
@@ -39,9 +41,10 @@ export const audienceService = {
    * Get all Mailchimp lists/audiences
    */
   getAllLists: () => {
-    console.log('Fetching lists from:', `${API_URL}/audience/lists`);
+    const endpoint = '/audience/lists';
+    console.log('Fetching lists from:', `${API_URL}${endpoint}`);
     return handleResponse(
-      api.get('/audience/lists')
+      api.get(endpoint)
     );
   },
 
