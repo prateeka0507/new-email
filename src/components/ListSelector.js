@@ -1,6 +1,6 @@
 // src/components/ListSelector.js
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { audienceService } from '../services/api';
 
 const ListSelector = ({ onChange }) => {
   const [lists, setLists] = useState([]);
@@ -11,8 +11,8 @@ const ListSelector = ({ onChange }) => {
     const fetchLists = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:3000/api/audience/lists');
-        setLists(response.data);
+        const response = await audienceService.getAllLists();
+        setLists(response);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching lists:', err);
