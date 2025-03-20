@@ -1,12 +1,15 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
-// Create axios instance with default config 
+// Log the API URL for debugging
+console.log('API URL being used:', API_URL);
+
+// Create axios instance with default config
 const api = axios.create({
   baseURL: API_URL,
   headers: {
-    'Content-Type': 'application/json' 
+    'Content-Type': 'application/json'
   },
   timeout: 10000 // 10 second timeout
 });
@@ -17,7 +20,15 @@ const handleResponse = async (promise) => {
     const response = await promise;
     return response.data;
   } catch (error) {
-    console.error('API Error:', error.response?.data || error);
+    // Enhanced error logging
+    console.error('API Error Details:', {
+      url: error.config?.url,
+      method: error.config?.method,
+      baseURL: error.config?.baseURL,
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
     throw error.response?.data || error;
   }
 };
@@ -27,9 +38,12 @@ export const audienceService = {
   /**
    * Get all Mailchimp lists/audiences
    */
-  getAllLists: () => handleResponse(
-    api.get('/audience/lists')
-  ),
+  getAllLists: () => {
+    console.log('Fetching lists from:', `${API_URL}/audience/lists`);
+    return handleResponse(
+      api.get('/audience/lists')
+    );
+  },
 
   /**
    * Bulk import subscribers from CSV file
@@ -67,13 +81,9 @@ export const campaignService = {
   )
 };
 
-// Add request interceptor for potential auth tokens
+// Add request interceptor for potential auth tokens and logging
 api.interceptors.request.use((config) => {
-  // You can add auth tokens here if needed
-  // const token = localStorage.getItem('token');
-  // if (token) {
-  //   config.headers.Authorization = `Bearer ${token}`;
-  // }
+  console.log('Making request to:', config.baseURL + config.url);
   return config;
 });
 
