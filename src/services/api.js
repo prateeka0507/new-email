@@ -77,7 +77,9 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export default {
+const apiServices = {
   audienceService,
   campaignService
 };
+
+export default apiServices;
