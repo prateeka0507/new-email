@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Remove trailing slash if present
-const API_URL = (process.env.REACT_APP_API_URL || 'http://localhost:3000').replace(/\/$/, '');
+const API_URL = 'https://email-tool-chry.onrender.com/api';
 
 // Log the API URL for debugging
 console.log('API URL being used:', API_URL);
